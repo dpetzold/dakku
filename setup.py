@@ -23,14 +23,14 @@ class TestCommand(Command):
 cmdclasses['test'] = TestCommand
 
 setup(
-    name = "baku",
-    packages = ["baku"],
+    name = "dago",
+    packages = ["dago"],
     version = "0.0.1",
-    description = "Baku - A Python Collection",
+    description = "Dago - A Python Collection",
     author = "Derrick Petzold",
-    author_email = "baku@derrickpetzold.com",
-    url = "http://derrickpetzold.com/baku",
-    download_url = "http://media.derrickpetzold.com/baku-0.0.1.tgz",
-    keywords = ["s3"],
+    author_email = "dago@derrickpetzold.com",
+    url = "http://derrickpetzold.com/dago",
+    download_url = "http://media.derrickpetzold.com/dago-0.0.1.tgz",
+    keywords = ['django'],
     cmdclass = cmdclasses,
 )
