@@ -10,5 +10,4 @@ setup(
     url = "http://derrickpetzold.com/dago",
     download_url = "http://media.derrickpetzold.com/dago-0.0.1.tgz",
     keywords = ['django'],
-    cmdclass = cmdclasses,
 )
