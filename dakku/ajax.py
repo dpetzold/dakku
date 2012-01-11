@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 import json
 
-from baku import util
+from bakku import util
 
 class AjaxResponse(HttpResponse):
 
