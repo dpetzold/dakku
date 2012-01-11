@@ -41,14 +41,11 @@ class RequestInfo(object):
             return self.request.session.session_key
         else:
             return '<?>'
-#        return getattr(self.request, name)
 
     def __iter__(self):
         keys = ['path', 'user.email', 'session_key']
         keys.extend(self.__dict__.keys())
         return keys.__iter__()
-#        return self.request.__iter__()
-#        return self.request.__dict__.keys().__iter__
 
 def logger(name='crowdtube.views'):
     def wrap(func):
