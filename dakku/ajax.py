@@ -1,8 +1,6 @@
 from django.http import HttpResponse
 import json
 
-from bakku import util
-
 class AjaxResponse(HttpResponse):
 
     """
@@ -77,7 +75,3 @@ class AjaxResponse(HttpResponse):
             json.dumps(
                 response,
                 indent=4), content_type='text/json')
-
-    @staticmethod
-    def decode(response):
-        return util.dict2bag(json.loads(response.read()))
