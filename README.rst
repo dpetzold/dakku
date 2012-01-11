@@ -54,7 +54,7 @@ Sends an email in the following message format::
 
     {{ comment.text|safe }}
 
-The kwargs are passed to the template for subsitution
+The kwargs are passed to the template for subsitution::
 
     email_util.send_email(
         email,
