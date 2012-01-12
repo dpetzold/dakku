@@ -37,8 +37,12 @@ class RequestInfo(object):
     def _get_attrs(self, obj):
         attrs = []
         for attr in dir(obj):
-            if not attr.startswith('_') and not callable(getattr(obj, attr)):
-                attrs.append(attr)
+            try:
+                if not attr.startswith('_') and \
+                        not callable(getattr(obj, attr)):
+                    attrs.append(attr)
+            except AttributeError:
+                pass
         return attrs
 
     def __iter__(self):
