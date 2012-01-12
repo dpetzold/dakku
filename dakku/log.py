@@ -1,5 +1,7 @@
 from fabric import colors
+
 import logging
+import socket
 
 from decorator import decorator
 from django.http import HttpRequest
@@ -32,6 +34,19 @@ class RequestInfo(object):
         self.request = request
 
     def __getitem__(self, name):
+
+        if name == 'request.host':
+            return socket.gethostname()
+
+        if name.startswith('request.meta'):
+            val = name.split('.')[2]
+            _logger.info(val)
+            try:
+                return self.request.META[val.upper()]
+            except KeyError as e:
+                _logger.error('key error ' + str(e))
+                return None
+
         return eval('self.%s' % (name))
 
     def _get_attrs(self, obj):
@@ -46,11 +61,17 @@ class RequestInfo(object):
         return attrs
 
     def __iter__(self):
-        keys = ['request.%s' % (a) for a in self._get_attrs(self.request)]
+        keys = ['request.host']
+        keys.extend(['request.%s' % (a) for a in
+                self._get_attrs(self.request)])
         keys.extend(['request.session.%s' % (a) for a in
             self._get_attrs(self.request.session)])
         keys.extend(['request.user.%s' % (a) for a in
             self._get_attrs(self.request.user)])
+        keys.extend(['request.meta.%s' % (a.lower()) for a in
+            self.request.META.keys()])
+        _logger.info(self.request.META.keys())
+        _logger.info(keys)
         return keys.__iter__()
 
 def logger(name):
