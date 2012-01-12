@@ -22,7 +22,7 @@ class EmailUtil(object):
         headers = {}
         message = ''
         for line in msg.split('\n'):
-            if line == '':
+            if line == '' and not in_body:
                 in_body = True
                 continue
 
