@@ -30,25 +30,23 @@ class RequestInfo(object):
 
     def __init__(self, request):
         self.request = request
-        super(RequestInfo, self).__init__()
 
     def __getitem__(self, name):
-        _logger.info(name)
-        if not name.startswith('request.'):
-            return None
         return eval('self.%s' % (name))
 
     def _get_attrs(self, obj):
-        return [ a for a in dir(obj) if not a.startswith('_') and not callable(a) ]
+        attrs = []
+        for attr in dir(obj):
+            if not attr.startswith('_') and not callable(getattr(obj, attr)):
+                attrs.append(attr)
+        return attrs
 
     def __iter__(self):
-        keys = []
-        keys.extend(['request.%s' % (a) for a in self._get_attrs(self.request)])
+        keys = ['request.%s' % (a) for a in self._get_attrs(self.request)]
         keys.extend(['request.session.%s' % (a) for a in
             self._get_attrs(self.request.session)])
         keys.extend(['request.user.%s' % (a) for a in
             self._get_attrs(self.request.user)])
-        keys.extend(self.__dict__.keys())
         return keys.__iter__()
 
 def logger(name):
