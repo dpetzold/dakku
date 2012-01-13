@@ -1,10 +1,11 @@
 from fabric import colors
-
 import logging
 import socket
 
 from decorator import decorator
 from django.http import HttpRequest
+
+import jsonlogger
 
 # http://stackoverflow.com/questions/384076/how-can-i-make-the-python-logging-output-to-be-colored
 
@@ -15,7 +16,7 @@ class StripFormatter(logging.Formatter):
         logging.Formatter.__init__(self, format)
 
     def format(self, record):
-        return Formatter.format(self, record).strip()
+        return logging.Formatter.format(self, record).strip()
 
 class ColoredFormatter(logging.Formatter):
     def __init__(self, format=None, mappings={}):
@@ -27,6 +28,17 @@ class ColoredFormatter(logging.Formatter):
         if level in self.mappings:
             record.msg = eval('%s(record.msg)' % (self.mappings[level]))
         return logging.Formatter.format(self, record).strip()
+
+class JsonFormatter(jsonlogger.JsonFormatter):
+
+    def __init__(self, *args, **kwargs):
+        super(JsonFormatter, self).__init__(*args, **kwargs)
+
+    def parse(self):
+        return eval(self._fmt)
+
+    def format(self, record):
+        return super(JsonFormatter, self).format(record)
 
 class RequestInfo(object):
 
