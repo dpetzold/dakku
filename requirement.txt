@@ -1,0 +1,1 @@
+-e git+git@github.com:dpetzold/python-json-logger.git#egg=python-json-logger

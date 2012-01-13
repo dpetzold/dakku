@@ -15,7 +15,7 @@ class StripFormatter(logging.Formatter):
         logging.Formatter.__init__(self, format)
 
     def format(self, record):
-        return logging.Formatter.format(self, record).strip()
+        return Formatter.format(self, record).strip()
 
 class ColoredFormatter(logging.Formatter):
     def __init__(self, format=None, mappings={}):
@@ -38,15 +38,12 @@ class RequestInfo(object):
         if name == 'request.host':
             return socket.gethostname()
 
-        if name.startswith('request.meta'):
+        if name.startswith('request.meta.'):
             val = name.split('.')[2]
-            _logger.info(val)
             try:
                 return self.request.META[val.upper()]
             except KeyError as e:
-                _logger.error('key error ' + str(e))
                 return None
-
         return eval('self.%s' % (name))
 
     def _get_attrs(self, obj):
@@ -70,8 +67,6 @@ class RequestInfo(object):
             self._get_attrs(self.request.user)])
         keys.extend(['request.meta.%s' % (a.lower()) for a in
             self.request.META.keys()])
-        _logger.info(self.request.META.keys())
-        _logger.info(keys)
         return keys.__iter__()
 
 def logger(name):
