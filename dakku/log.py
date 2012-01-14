@@ -5,6 +5,7 @@ import socket
 from decorator import decorator
 from django.http import HttpRequest
 
+import json
 import jsonlogger
 
 # http://stackoverflow.com/questions/384076/how-can-i-make-the-python-logging-output-to-be-colored
@@ -98,3 +99,24 @@ def logger(name):
             return func(*args, **kwargs)
         return caller
     return wrap
+
+
+def entrypoint():
+    def wrap(func):
+        def caller(*args, **kwargs):
+            request = None
+            for arg in args:
+                if isinstance(arg, HttpRequest):
+                    request = arg
+                    break
+
+            if request.session.exists(request.session.session_key):
+                kwargs['logger'].info('returning visitor')
+            else:
+                kwargs['logger'].info('new visitor')
+
+            return func(*args, **kwargs)
+        return caller
+    return wrap
+
+
