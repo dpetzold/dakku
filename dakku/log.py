@@ -31,15 +31,8 @@ class ColoredFormatter(logging.Formatter):
         return logging.Formatter.format(self, record).strip()
 
 class JsonFormatter(jsonlogger.JsonFormatter):
-
-    def __init__(self, *args, **kwargs):
-        super(JsonFormatter, self).__init__(*args, **kwargs)
-
     def parse(self):
         return eval(self._fmt)
-
-    def format(self, record):
-        return super(JsonFormatter, self).format(record)
 
 class RequestInfo(object):
 
@@ -47,10 +40,8 @@ class RequestInfo(object):
         self.request = request
 
     def __getitem__(self, name):
-
         if name == 'request.host':
             return socket.gethostname()
-
         if name.startswith('request.meta.'):
             val = name.split('.')[2]
             try:
