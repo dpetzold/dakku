@@ -111,6 +111,7 @@ def entrypoint():
                 try:
                     request.META['HTTP_USER_AGENT']
                 except KeyError:
+                    logger.info('No user agent')
                     response = HttpResponse(status=403)
                     response.write('Forbidden')
                     return response
