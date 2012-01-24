@@ -3,7 +3,7 @@ import logging
 import socket
 
 from decorator import decorator
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 
 import json
 import jsonlogger
@@ -11,6 +11,9 @@ import jsonlogger
 # http://stackoverflow.com/questions/384076/how-can-i-make-the-python-logging-output-to-be-colored
 
 _logger = logging.getLogger(__name__)
+
+class NoUserAgent(Exception):
+    pass
 
 class StripFormatter(logging.Formatter):
     def __init__(self, format=None):
@@ -40,6 +43,7 @@ class RequestInfo(object):
         self.request = request
 
     def __getitem__(self, name):
+        _logger.debug(name)
         if name == 'request.host':
             return socket.gethostname()
         if name.startswith('request.meta.'):
@@ -71,6 +75,7 @@ class RequestInfo(object):
             self._get_attrs(self.request.user)])
         keys.extend(['request.meta.%s' % (a.lower()) for a in
             self.request.META.keys()])
+        _logger.debug(keys)
         return keys.__iter__()
 
 def logger(name):
@@ -101,10 +106,19 @@ def entrypoint():
                     request = arg
                     break
 
-            if request.session.exists(request.session.session_key):
-                kwargs['logger'].info('returning visitor')
-            else:
-                kwargs['logger'].info('new visitor')
+            if request is not None:
+
+                try:
+                    request.META['HTTP_USER_AGENT']
+                except KeyError:
+                    response = HttpResponse(status=403)
+                    response.write('Forbidden')
+                    return response
+
+                if request.session.exists(request.session.session_key):
+                    kwargs['logger'].info('returning visitor')
+                else:
+                    kwargs['logger'].info('new visitor')
 
             return func(*args, **kwargs)
         return caller
