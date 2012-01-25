@@ -92,19 +92,24 @@ def logger(name):
     return wrap
 
 
-def entrypoint():
+def entrypoint(name):
     def wrap(func):
         def caller(*args, **kwargs):
-            request = None
             for arg in args:
                 if isinstance(arg, HttpRequest):
                     request = arg
                     break
 
-            if request.session.exists(request.session.session_key):
-                kwargs['logger'].info('returning visitor')
+            if request is not None:
+                logger = logging.LoggerAdapter(
+                        logging.getLogger(name), RequestInfo(request))
             else:
-                kwargs['logger'].info('new visitor')
+                logger = logging.getLogger(name)
+
+            if request.session.exists(request.session.session_key):
+                logger.info('returning visitor')
+            else:
+                logger.info('new visitor')
 
             return func(*args, **kwargs)
         return caller
