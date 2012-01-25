@@ -97,7 +97,7 @@ def logger(name):
     return wrap
 
 
-def entrypoint():
+def entrypoint(name):
     def wrap(func):
         def caller(*args, **kwargs):
             request = None
@@ -111,7 +111,7 @@ def entrypoint():
                 try:
                     request.META['HTTP_USER_AGENT']
                 except KeyError:
-                    logger.info('No user agent')
+                    _logger.info('No user agent')
                     response = HttpResponse(status=403)
                     response.write('Forbidden')
                     return response
