@@ -100,7 +100,6 @@ def logger(name):
 def entrypoint(name):
     def wrap(func):
         def caller(*args, **kwargs):
-            request = None
             for arg in args:
                 if isinstance(arg, HttpRequest):
                     request = arg
@@ -116,10 +115,15 @@ def entrypoint(name):
                     response.write('Forbidden')
                     return response
 
-                if request.session.exists(request.session.session_key):
-                    kwargs['logger'].info('returning visitor')
-                else:
-                    kwargs['logger'].info('new visitor')
+                logger = logging.LoggerAdapter(
+                        logging.getLogger(name), RequestInfo(request))
+            else:
+                logger = logging.getLogger(name)
+
+            if request.session.exists(request.session.session_key):
+                logger.info('returning visitor')
+            else:
+                logger.info('new visitor')
 
             return func(*args, **kwargs)
         return caller
