@@ -105,20 +105,26 @@ def entrypoint(name):
                     request = arg
                     break
 
-            if request is not None:
+            if request is None:
+                return func(*args, **kwargs)
 
-                try:
-                    request.META['HTTP_USER_AGENT']
-                except KeyError:
-                    _logger.info('No user agent')
-                    response = HttpResponse(status=403)
-                    response.write('Forbidden')
-                    return response
+            try:
+                request.META['HTTP_USER_AGENT']
+            except KeyError:
+                _logger.info('No user agent from %s' % (request.META['remote_addr']))
+                response = HttpResponse(status=403)
+                response.write('Forbidden')
+                return response
 
-                logger = logging.LoggerAdapter(
-                        logging.getLogger(name), RequestInfo(request))
-            else:
-                logger = logging.getLogger(name)
+            logger = logging.LoggerAdapter(
+                    logging.getLogger(name), RequestInfo(request))
+
+            if request.user.is_authenticated():
+                request.session.save()
+                profile = request.user.get_profile()
+                if profile:
+                    profile.session_key = request.session.session_key
+                    profile.save()
 
             if request.session.exists(request.session.session_key):
                 logger.info('returning visitor')
