@@ -75,7 +75,7 @@ class RequestInfo(object):
             self._get_attrs(self.request.user)])
         keys.extend(['request.meta.%s' % (a.lower()) for a in
             self.request.META.keys()])
-        _logger.debug(keys)
+#        _logger.debug(keys)
         return keys.__iter__()
 
 def logger(name):
