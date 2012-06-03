@@ -111,7 +111,8 @@ def entrypoint(name):
             try:
                 request.META['HTTP_USER_AGENT']
             except KeyError:
-                _logger.info('No user agent from %s' % (request.META['remote_addr']))
+                _logger.info('No user agent from %s' % \
+                        (request.META['REMOTE_ADDR']))
                 response = HttpResponse(status=403)
                 response.write('Forbidden')
                 return response
