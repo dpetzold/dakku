@@ -43,7 +43,7 @@ class RequestInfo(object):
         self.request = request
 
     def __getitem__(self, name):
-        _logger.debug(name)
+#        _logger.debug(name)
         if name == 'request.host':
             return socket.gethostname()
         if name.startswith('request.meta.'):
