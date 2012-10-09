@@ -1,3 +1,4 @@
+from . import fields
 VERSION = (0, 0, 1, 'beta')
 
 # Dynamically calculate the version based on VERSION tuple

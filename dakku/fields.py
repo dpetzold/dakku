@@ -42,7 +42,7 @@ class BaseAutoField(object):
         setattr(model_instance, self.attname, value)
         return value
 
-class AutoHashField(BaseAutoField, CharField):
+class RandomCharField(BaseAutoField, CharField):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('blank', True)
@@ -52,7 +52,7 @@ class AutoHashField(BaseAutoField, CharField):
         self.include_digits = kwargs.pop('include_digits', True)
         self.length = kwargs.pop('length', 8)
         kwargs['max_length'] = self.length
-        super(AutoHashField, self).__init__(*args, **kwargs)
+        super(RandomCharField, self).__init__(*args, **kwargs)
 
     def generate_hash(self, chars):
         return ''.join([random.choice(list(chars)) for x in range(self.length)])
@@ -68,11 +68,11 @@ class AutoHashField(BaseAutoField, CharField):
             chars += string.digits
 
         auto_hash = self.generate_hash(chars)
-        return super(AutoHashField, self).find_unique(model_instance,
+        return super(RandomCharField, self).find_unique(model_instance,
                 auto_hash, self.generate_hash, chars)
 
-    def internal_type(self):
-        return "HashField"
+    def get_internal_type(self):
+        return "RandomCharField"
 
     def south_field_triple(self):
         "Returns a suitable description of this field for South."
