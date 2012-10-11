@@ -5,7 +5,49 @@ Collection of utility stuff for use with django.
 .. contents:: Contents
     :depth: 5
 
-ajax
+Fields
+------
+
+RandomCharField
+===============
+Django field that auto populates with a unique random character field. Valid
+options are:
+
+- length - Specifiy the field length. Defaults to 8.
+- digits_only - Only use digits. Defaults to False.
+- alpha_only - Only use alpha characters. Defaults to False.
+- lowercase - Lowercase the characters. Defaults to False.
+- include_punctuation - Include punctuation characters. Defaults to False.
+
+Here is some sample output:
+
+    >>> class RandomCharTestModel(models.Model):
+    >>>     chars = RandomCharField(length=12)
+    >>> print(chars)
+    YMNVm9GE
+
+    >>> class RandomCharTestModelAlpha(models.Model):
+    >>>     chars = RandomCharField(length=12, alpha_only=True)
+    CxPWKJHDPnNO
+
+    >>> class RandomCharTestModelDigits(models.Model):
+    >>>     chars = RandomCharField(length=4, digits_only=True)
+    7097
+
+    >>> class RandomCharTestModelPunctuation(models.Model):
+    >>>     chars = RandomCharField(length=12, include_punctuation=True)
+    k[ZS.TR,0LHO    
+
+    >>> class RandomCharTestModelLower(models.Model):
+    >>>     chars = RandomCharField(length=12, lower=True, alpha_only=True)
+    pzolbemetmok
+
+    >>> class RandomCharTestModelLowerAlphaDigits(models.Model):
+    >>>     chars = RandomCharField(length=12, lower=True, include_punctuation=False)
+    wfaytk3msiin
+
+
+Ajax
 ----
 Return a JSON HTTP response for use with Ajax.
 
@@ -32,6 +74,7 @@ That could be use by JQuery with the following::
       success: function(response) {
         if (response.success) {
             // Do something successful
+            var blah = response.data['blah'];
         }
         else {
             // Do something else
@@ -43,7 +86,7 @@ should contian a string message of why the request failed. For example::
 
     >>> AjaxResponse(False, error='You must logged to continue')
 
-email
+Email
 -----
 
 Sends an email in the following message format::
@@ -62,7 +105,7 @@ The kwargs are passed to the template for subsitution::
         comment=comment,
         settings=settings)
 
-log
+Log
 ---
 
 Some utilities for use with the logging module and django.::

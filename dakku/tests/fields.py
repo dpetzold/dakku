@@ -33,6 +33,7 @@ class RandomCharFieldTest(unittest.TestCase):
         settings.INSTALLED_APPS.append('dakku.tests')
         loading.cache.loaded = False
         call_command('syncdb', verbosity=0)
+        self.verbose = False
 
     def tearDown(self):
         RandomCharTestModel.objects.all().delete()
@@ -41,13 +42,15 @@ class RandomCharFieldTest(unittest.TestCase):
     def testRandomCharField(self):
         m = RandomCharTestModel()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         self.assertEqual(len(m.chars), 12)
 
     def testRandomCharFieldLower(self):
         m = RandomCharTestModelLower()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         for c in m.chars:
             if c.isalpha():
                 self.assertTrue(c.islower())
@@ -55,26 +58,30 @@ class RandomCharFieldTest(unittest.TestCase):
     def testRandomCharFieldAlpha(self):
         m = RandomCharTestModelAlpha()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         for c in m.chars:
             self.assertTrue(c.isalpha())
 
     def testRandomCharFieldDigits(self):
         m = RandomCharTestModelDigits()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         for c in m.chars:
             self.assertTrue(c.isdigit())
 
     def testRandomCharFieldPunctuation(self):
         m = RandomCharTestModelPunctuation()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         self.assertEqual(len(m.chars), 12)
 
     def testRandomCharTestModelLowerAlphaDigits(self):
         m = RandomCharTestModelLowerAlphaDigits()
         m.save()
-#        print(m.chars)
+        if self.verbose:
+            print(m.chars)
         for c in m.chars:
             self.assertTrue(c.isdigit() or (c.isalpha() and c.islower()))
