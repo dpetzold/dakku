@@ -52,14 +52,21 @@ Commands
 
 backup
 ------
-For backing up and restoring a mysql database to Rackspace Cloudfiles. The database 
-is dumped gzipped and then offloaded.
+For backing up and restoring a mysql database to Rackspace Cloud Files. The database 
+is dumped gzipped and then offloaded in the following format:
+
+    <project name>.YYYYMMDD_HHMMSS-<hostname>.gz
 
 Valid options are:
 
 - list - List the avaliable backups.
 - restore <dump> - Restore the database contained in the dumpfile.
 
+By default a backup is performed and could be used in cron like this
+
+* 3 * * * /sites/advisordeck/advisordeck/manage.py backup --db
+
+to backup the database every morning at 3am.
 
 Ajax
 ----
