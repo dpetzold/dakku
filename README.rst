@@ -5,11 +5,12 @@ Collection of utility stuff for use with django.
 .. contents:: Contents
     :depth: 5
 
+------
 Fields
 ------
 
 RandomCharField
-===============
+---------------
 Django field that auto populates with a unique random character field. Valid
 options are:
 
@@ -44,6 +45,20 @@ Here is some sample output:
     >>> class RandomCharTestModelLowerAlphaDigits(models.Model):
     >>>     chars = RandomCharField(length=12, lower=True, include_punctuation=False)
     wfaytk3msiin
+
+--------
+Commands
+--------
+
+backup
+------
+For backing up and restoring a mysql database to Rackspace Cloudfiles. The database 
+is dumped gzipped and then offloaded.
+
+Valid options are:
+
+- list - List the avaliable backups.
+- restore <dump> - Restore the database contained in the dumpfile.
 
 
 Ajax

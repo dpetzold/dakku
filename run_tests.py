@@ -21,14 +21,7 @@ def main():
         DATABASE_ENGINE='django.db.backends.sqlite3',
         DATABASES={
             'default': {
-#                'NAME': '/tmp/dakku.db',
                 'ENGINE': 'django.db.backends.sqlite3',
-#                'ENGINE': 'django.db.backends.mysql',
-#                'HOST': '',
-#                'PORT': '',
-#                'NAME': 'derrickpetzold',
-#                'USER': 'django',
-#                'PASSWORD': 'password'
             }
         },
         MEDIA_ROOT='/tmp/dakku_test_media/',

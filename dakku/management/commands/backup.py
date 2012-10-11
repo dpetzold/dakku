@@ -14,8 +14,8 @@ import django
 from django.core.management.base import CommandError, BaseCommand
 from django.conf import settings
 
-from django_extensions.management.commands.mysql import MysqlCommand
-from django_extensions.management.commands.rackspace import RackspaceCommand
+from dakku.commands.mysql import MysqlCommand
+from dakku.management.commands.rackspace import RackspaceCommand
 
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger(__name__)
@@ -120,7 +120,7 @@ class Command(BaseCommand):
 
     option_list = BaseCommand.option_list + (
         make_option('--db', action='store_true',
-                    dest='db', default=False,
+                    dest='db', default=True,
                     help='Backup the database.'),
         make_option('-C', '--contianer', action='store',
                     dest='container',
