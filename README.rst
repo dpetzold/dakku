@@ -23,7 +23,6 @@ Here is some sample output:
 
     >>> class RandomCharTestModel(models.Model):
     >>>     chars = RandomCharField(length=12)
-    >>> print(chars)
     YMNVm9GE
 
     >>> class RandomCharTestModelAlpha(models.Model):

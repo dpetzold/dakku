@@ -33,7 +33,6 @@ class BaseUniqueField(models.CharField):
         while queryset.filter(**kwargs):
             value = callback()
             kwargs[self.attname] = value
-            print(value)
         return value
 
 class RandomCharField(BaseUniqueField):
