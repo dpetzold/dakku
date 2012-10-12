@@ -39,7 +39,7 @@ class Command(BaseCommand):
         make_option('--dry-run', action='store_true',
                     dest='dry_run', default=False,
                     help='Dry run.'),
-        make_option('-V', '--verbose', action='store_true',
+        make_option('--verbose', action='store_true',
                     dest='verbose', default=False,
                     help='Be verbose.'),
     )
@@ -53,7 +53,8 @@ class Command(BaseCommand):
         backup = BackupUtil(
             options.get('router'),
             options.get('container'),
-            options.get('verbose'))
+            dry_run=options.get('dry_run'),
+            verbose=options.get('verbose'))
 
         if options.get('cull'):
             backup = backup.cull()

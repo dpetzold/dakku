@@ -3,3 +3,6 @@ class DakkuError(Exception):
 
 class BadFileSize(DakkuError):
     pass
+
+class UnknownFileFormat(DakkuError):
+    pass

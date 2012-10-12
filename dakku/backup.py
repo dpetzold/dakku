@@ -11,6 +11,30 @@ from . import exceptions as dakku_exception
 
 logger = logging.getLogger(__name__)
 
+
+class BackupBase(object):
+
+    def deletefile(self, date_str):
+        """Given a date in YYYYMMDD check if the file should be deleted or keep"""
+
+        today = datetime.date.today()
+        date = datetime.date(int(date_str[:4]), int(date_str[4:6]), int(date_str[6:8]))
+        age = today - date
+
+        if age < datetime.timedelta(weeks=2):
+            if self.verbose:
+                print('keeping < 2 weeks')
+            return False
+        if age < datetime.timedelta(weeks=8) and date.weekday() == 0:
+            if self.verbose:
+                print('keeping monday')
+            return False
+        if date.day == 2:
+            if self.verbose:
+                print('keeping first of the month')
+            return False
+        return True
+
 class BackupUtil(object):
 
     def __init__(self, router, container_name, dry_run=False, verbose=False):
@@ -113,19 +137,3 @@ class BackupUtil(object):
     def cull(self):
         self.rackspace.cull()
         self.cull_local()
-
-    @staticmethod
-    def culls():
-        dates = []
-        start_time = datetime.datetime.now()
-        lastweeks = start_time - datetime.timedelta(weeks=2)
-
-        # delete last weeks except mondays
-        if lastweeks.weekday() != 1 and lastweeks.day != 1:
-            dates.append(lastweeks.strftime('%Y%m%d'))
-
-        # keep 8 weeks of mondays
-        lastmonths = start_time - datetime.timedelta(weeks=8)
-        if lastmonths.weekday() == 1 and lastmonths.day != 1:
-            dates.append(lastmonths.strftime('%Y%m%d'))
-        return dates

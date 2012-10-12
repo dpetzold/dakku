@@ -9,9 +9,10 @@ from django.conf import settings
 
 import cloudfiles
 
-from .backup import BackupUtil
+from .backup import BackupBase
+from . import exceptions as dakku_exception
 
-class RackspaceUtil(object):
+class RackspaceUtil(BackupBase):
 
     def __init__(self, container_name, verbose, dry_run=False, forward=0,
             max_attempts=5):
@@ -28,22 +29,27 @@ class RackspaceUtil(object):
             self.start_time = datetime.datetime.now()
         else:
             self.start_time = datetime.datetime.now() + datetime.timedelta(days=forward)
+        super(RackspaceUtil, self).__init__()
 
     def cull(self):
         culled = []
         for obj in self.container.get_objects():
-            for date in BackupUtil.culls():
-                if self.verbose:
-                    print('Checking %s %s' % (date, obj.name))
-                search = re.search('\.%s_' % (date), obj.name)
-                if search is not None:
-                    if self.verbose:
-                        print('Deleting %s' % (obj.name))
-                    if not self.dry_run:
-                        self.container.delete_object(obj.name)
-                    culled.append(obj)
-        return culled
+            search = re.search(r'(\d{8})', obj.name)
+            if search is None:
+#                raise dakku_exception.UnknownFileFormat(obj.name)
+                self.container.delete_object(obj.name)
+                continue
 
+            if self.deletefile(search.group(0)):
+                if self.verbose:
+                    print('Deleting %s' % (obj.name))
+                if not self.dry_run:
+                    self.container.delete_object(obj.name)
+                culled.append(obj)
+            elif self.verbose:
+                print('Keeping %s' % (obj.name))
+
+        return culled
 
     def download(self, dest):
         for obj in self.list():
