@@ -121,18 +121,21 @@ class BackupUtil(object):
         culled = []
         files = os.listdir(settings.BACKUP_DIR)
         for filename in files:
-            for date in self.culls():
+            filepath = '%s/%s/' % (settings.BACKUP_DIR, filename)
+            search = re.search(r'(\d{8})', filename)
+            if search is None:
+                continue
+
+            if self.deletefile(search.group(0)):
                 if self.verbose:
-                    print('Checking %s %s' % (date, filename))
-                search = re.search('\.%s_' % (date), filename)
-                if search is not None:
-                    filepath = '%s/%s/' % (settings.BACKUP_DIR, filename)
-                    if self.verbose:
-                        print('Deleting %s' % (filepath))
-                    if not self.dry_run:
-                        os.unlink(filepath)
-                    culled.append(filepath)
+                    print('Deleting %s' % (filename))
+                if not self.dry_run:
+                    os.unlink(filepath)
+                culled.append(filename)
+            elif self.verbose:
+                print('Keeping %s' % (filename))
         return culled
+
 
     def cull(self):
         self.rackspace.cull()
