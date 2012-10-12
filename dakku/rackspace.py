@@ -9,7 +9,9 @@ from django.conf import settings
 
 import cloudfiles
 
-class RackspaceCommand(object):
+from .backup import BackupUtil
+
+class RackspaceUtil(object):
 
     def __init__(self, container_name, verbose, dry_run=False, forward=0,
             max_attempts=5):
@@ -27,27 +29,10 @@ class RackspaceCommand(object):
         else:
             self.start_time = datetime.datetime.now() + datetime.timedelta(days=forward)
 
-
-    @property
-    def culls(self):
-        dates = []
-        lastweeks = self.start_time - datetime.timedelta(weeks=1)
-
-        # delete last weeks except mondays
-        if lastweeks.weekday() != 1 and lastweeks.day != 1:
-            dates.append(lastweeks.strftime('%Y%m%d'))
-
-        # keep 8 weeks of mondays
-        lastmonths = self.start_time - datetime.timedelta(weeks=8)
-        if lastmonths.weekday() == 1 and lastmonths.day != 1:
-            dates.append(lastmonths.strftime('%Y%m%d'))
-        return dates
-
-
     def cull(self):
         culled = []
         for obj in self.container.get_objects():
-            for date in self.culls:
+            for date in BackupUtil.culls():
                 if self.verbose:
                     print('Checking %s %s' % (date, obj.name))
                 search = re.search('\.%s_' % (date), obj.name)
