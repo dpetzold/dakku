@@ -22,7 +22,10 @@ class Command(BaseCommand):
                     help='The container to use.'),
         make_option('--cull', action='store_true',
                     dest='cull', default=False,
-                    help='Cull the backup files.'),
+                    help='Cull the backup files after the backup.'),
+        make_option('--cull-only', action='store_true',
+                    dest='cull_only', default=False,
+                    help='Only cull the backup files.'),
         make_option('--list', action='store_true',
                     dest='list', default=False,
                     help='List the avalible backups.'),
@@ -56,7 +59,7 @@ class Command(BaseCommand):
             dry_run=options.get('dry_run'),
             verbose=options.get('verbose'))
 
-        if options.get('cull'):
+        if options.get('cull_only'):
             backup = backup.cull()
         elif options.get('list'):
             backup = backup.list()
@@ -66,4 +69,5 @@ class Command(BaseCommand):
             backup = backup.backup_site()
         else:
             backup = backup.backup_database()
-            backup.cull()
+            if options.get('cull'):
+                backup.cull()
