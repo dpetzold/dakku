@@ -48,6 +48,9 @@ class RandomCharField(BaseUniqueField):
         self.length = kwargs.pop('length', 8)
         kwargs['max_length'] = self.length
 
+        # legacy
+        kwargs.pop('include_digits', False)
+
         self.valid_chars = string.lowercase
 
         if self.digits_only:
