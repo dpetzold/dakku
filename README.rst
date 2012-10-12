@@ -73,6 +73,10 @@ The cull schedule is to keep two weeks of daily backups. Eight weeks of
 Monday's backup and the always keep the backup from the first of the 
 month.
 
+---------
+Utilities
+---------
+
 Ajax
 ----
 Return a JSON HTTP response for use with Ajax.
