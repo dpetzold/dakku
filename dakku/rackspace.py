@@ -44,7 +44,10 @@ class RackspaceUtil(BackupBase):
                 if self.verbose:
                     print('Deleting %s' % (obj.name))
                 if not self.dry_run:
-                    self.container.delete_object(obj.name)
+                    try:
+                        self.container.delete_object(obj.name)
+                    except cloudfiles.errors.ResponseError:
+                        pass
                 culled.append(obj)
             elif self.verbose:
                 print('Keeping %s' % (obj.name))
