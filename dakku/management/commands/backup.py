@@ -29,7 +29,7 @@ class Command(BaseCommand):
         make_option('--list', action='store_true',
                     dest='list', default=False,
                     help='List the avalible backups.'),
-        make_option('--restore', action='store_true',
+        make_option('--restore', action='store',
                     dest='restore', default=False,
                     help='Restore (drop, create, source) the db'
                          ' from specified local or remote file.'),
