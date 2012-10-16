@@ -90,9 +90,11 @@ class RandomCharField(BaseUniqueField):
         field_class = '%s.RandomCharField' % (self.__module__)
         args, kwargs = introspector(self)
         kwargs.update({
-            'lower': repr(self.lower),
-            'include_digits': repr(self.include_digits),
+            'alpha_only': repr(self.alpha_only),
+            'digits_only': repr(self.digits_only),
+            'include_punctuation': repr(self.include_punctuation),
             'length': repr(self.length),
+            'lower': repr(self.lower),
         })
         # That's our definition!
         return (field_class, args, kwargs)
