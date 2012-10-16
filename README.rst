@@ -65,13 +65,17 @@ Valid options are:
 
 By default a backup is performed and could be used in cron like this
 
-* 3 * * * /sites/advisordeck/advisordeck/manage.py backup --cull
+    * 3 * * * /sites/advisordeck/advisordeck/manage.py backup --cull
 
 to backup the database every morning at 3am deleting previous backups.
 
 The cull schedule is to keep two weeks of daily backups. Eight weeks of
 Monday's backup and the always keep the backup from the first of the 
 month.
+
+To restore find the backup you want from the list option then pass that value
+to the restore option. The local db will be backuped and then restored from 
+the requested dump.
 
 ---------
 Utilities
