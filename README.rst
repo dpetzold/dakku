@@ -65,7 +65,7 @@ Valid options are:
 
 By default a backup is performed and could be used in cron like this
 
-    * 3 * * * /sites/advisordeck/advisordeck/manage.py backup --cull
+    0 3 * * * /sites/advisordeck/advisordeck/manage.py backup --cull
 
 to backup the database every morning at 3am deleting previous backups.
 
