@@ -79,6 +79,7 @@ class BackupUtil(object):
         logger.info('Uploaded %s to %s %s' % (dbfile, uploaded.name, uploaded.size))
         if self.verbose:
             print(uploaded.name)
+        os.unlink(dbfile)
         return uploaded
 
     def backup_site(self):
