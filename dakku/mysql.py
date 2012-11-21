@@ -15,7 +15,7 @@ class MysqlUtil(object):
             cmd += '-h %s' % (self.db['HOST'])
         if self.db['PORT'] != '':
             cmd += ' -p %s' % (self.db['PORT'])
-        cmd += '-u {user} --password={password}'.format(
+        cmd += ' -u {user} --password={password}'.format(
             user=self.db['USER'],
             password=self.db['PASSWORD'])
         self.mysqlbase = cmd
