@@ -1,19 +1,24 @@
-from fabric import colors
 import logging
 import socket
 
-from decorator import decorator
+from fabric import colors  # noqa
+
 from django.http import HttpRequest, HttpResponse
 
-import json
-import jsonlogger
+try:
+    from jsonlogger import JsonFormatter
+except ImportError:
+    class JsonFormatter():
+        pass
 
 # http://stackoverflow.com/questions/384076/how-can-i-make-the-python-logging-output-to-be-colored
 
 _logger = logging.getLogger(__name__)
 
+
 class NoUserAgent(Exception):
     pass
+
 
 class StripFormatter(logging.Formatter):
     def __init__(self, format=None):
@@ -21,6 +26,7 @@ class StripFormatter(logging.Formatter):
 
     def format(self, record):
         return logging.Formatter.format(self, record).strip()
+
 
 class ColoredFormatter(logging.Formatter):
     def __init__(self, format=None, mappings={}):
@@ -33,9 +39,11 @@ class ColoredFormatter(logging.Formatter):
             record.msg = eval('%s(record.msg)' % (self.mappings[level]))
         return logging.Formatter.format(self, record).strip()
 
-class JsonFormatter(jsonlogger.JsonFormatter):
+
+class JsonFormatter(JsonFormatter):
     def parse(self):
         return eval(self._fmt)
+
 
 class RequestInfo(object):
 
@@ -50,7 +58,7 @@ class RequestInfo(object):
             val = name.split('.')[2]
             try:
                 return self.request.META[val.upper()]
-            except KeyError as e:
+            except KeyError:
                 return None
         return eval('self.%s' % (name))
 
@@ -78,6 +86,7 @@ class RequestInfo(object):
 #        _logger.debug(keys)
         return keys.__iter__()
 
+
 def logger(name):
     def wrap(func):
         def caller(*args, **kwargs):
@@ -89,7 +98,7 @@ def logger(name):
             if 'logger' not in kwargs:
                 if request is not None:
                     kwargs['logger'] = logging.LoggerAdapter(
-                            logging.getLogger(name), RequestInfo(request))
+                        logging.getLogger(name), RequestInfo(request))
                 else:
                     kwargs['logger'] = logging.getLogger(name)
             return func(*args, **kwargs)
@@ -111,14 +120,13 @@ def entrypoint(name):
             try:
                 request.META['HTTP_USER_AGENT']
             except KeyError:
-                _logger.info('No user agent from %s' % \
-                        (request.META['REMOTE_ADDR']))
+                _logger.info('No user agent from %s' % (request.META['REMOTE_ADDR']))
                 response = HttpResponse(status=403)
                 response.write('Forbidden')
                 return response
 
             logger = logging.LoggerAdapter(
-                    logging.getLogger(name), RequestInfo(request))
+                logging.getLogger(name), RequestInfo(request))
 
             if request.user.is_authenticated():
                 request.session.save()
@@ -135,5 +143,3 @@ def entrypoint(name):
             return func(*args, **kwargs)
         return caller
     return wrap
-
-

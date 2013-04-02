@@ -13,6 +13,7 @@ except ImportError:
     import datetime
     datetime_now = datetime.datetime.now  # noqa
 
+
 class BaseUniqueField(models.CharField):
 
     def find_unique(self, model_instance, value, callback, *args):
@@ -34,6 +35,7 @@ class BaseUniqueField(models.CharField):
             value = callback()
             kwargs[self.attname] = value
         return value
+
 
 class RandomCharField(BaseUniqueField):
 
@@ -68,20 +70,18 @@ class RandomCharField(BaseUniqueField):
         super(RandomCharField, self).__init__(*args, **kwargs)
 
     def generate_chars(self, *args, **kwargs):
-
-        return ''.join([random.choice(list(self.valid_chars)) for x in range(self.length)])
+        return ''.join(random.sample(list(self.valid_chars), self.length))
 
     def pre_save(self, model_instance, add):
-        if not add:
-            return getattr(model_instance, self.attname)
-
-        initial = self.generate_chars()
-        value = self.find_unique(model_instance, initial, self.generate_chars)
-        setattr(model_instance, self.attname, value)
+        value = getattr(model_instance, self.attname)
+        if value is None or value == '':
+            initial = self.generate_chars()
+            value = self.find_unique(model_instance, initial, self.generate_chars)
+            setattr(model_instance, self.attname, value)
         return value
 
     def get_internal_type(self):
-        return "CharField"
+        return 'CharField'
 
     def south_field_triple(self):
         "Returns a suitable description of this field for South."
